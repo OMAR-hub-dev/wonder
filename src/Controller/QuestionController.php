@@ -56,12 +56,37 @@ class QuestionController extends AbstractController
             $this->addFlash('success', 'Votre reponse a bien été ajouter');
             return  $this->redirect($request->getUri());
        }
+        return $this->render('question/show.html.twig', [
+            'question'=>$question,
+            'form'=>$commentForm->createView()
+        ]);
+    }
+    #[Route("/question/rating/{id}/{score}",name:"question_rating")]
+    public function ratingQuestion(Request $request, Question $question,int $score, EntityManagerInterface $em){
+
+        $question ->setRating($question->getRating() + $score);
+        $em->flush();
+        $referer = $request->server->get('HTTP-REFERER');
+
+        return $referer? $this->redirect($referer): $this->redirectToRoute('home');
+    }
+
+    #[Route("/comment/rating/{id}/{score}",name:"comment_rating")]
+    public function ratingComment(Request $request, Comment $comment,int $score, EntityManagerInterface $em){
+
+        $comment ->setRating($comment->getRating() + $score);
+        $em->flush();
+        $referer = $request->server->get('HTTP-REFERER');
+
+        return $referer? $this->redirect($referer): $this->redirectToRoute('home');
+    }
+
+
+}
 
 
 
-
-
-    //    $question =  [
+//    $question =  [
     //     'id'=>3,
     //     'title'=>'WONDER You Can\'t Afford ',
     //     'content'=>'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Alias harum atque ducimus ullam temporibus, sequi rerum natus consequatur modi libero!',
@@ -72,10 +97,3 @@ class QuestionController extends AbstractController
     //     ],
     //     'nombreOfResponse'=>25
     // ];
-
-        return $this->render('question/show.html.twig', [
-            'question'=>$question,
-            'form'=>$commentForm->createView()
-        ]);
-    }
-}
