@@ -2,47 +2,80 @@
 
 namespace App\Controller;
 
+use DateTimeImmutable;
+use App\Entity\Comment;
+use App\Entity\Question;
+use App\Form\CommentType;
 use App\Form\QuestionType;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 
 class QuestionController extends AbstractController
 {
     #[Route('/question/ask', name: 'question_form')]
-    public function index(Request $request): Response
+    public function index(Request $request,EntityManagerInterface $em): Response
     {
-        $formquestion = $this->createForm(QuestionType::class);
+        $question = new Question();
+        $formquestion = $this->createForm(QuestionType::class, $question);
 
         $formquestion->handleRequest($request);
          if($formquestion->isSubmitted() && $formquestion->isValid()){
-            
+            $question->setNombreOfResonse(0);
+            $question->setRating(0);
+            $question->setCreatedAt(new DateTimeImmutable());
+
+            $em->persist($question);
+            $em->flush();
+            return  $this->redirectToRoute('home');
          }
 
         return $this->render('question/index.html.twig', [
             'form' => $formquestion->createView(),
+
         ]);
     }
 
 
     #[Route('/question/{id}', name: 'question_show')]
-    public function show(Request $request, string $id): Response
+    public function show(Request $request, Question $question, EntityManagerInterface $em): Response
     {
-       $question =  [
-        'id'=>3,
-        'title'=>'WONDER You Can\'t Afford ',
-        'content'=>'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Alias harum atque ducimus ullam temporibus, sequi rerum natus consequatur modi libero!',
-        'rating'=>0,
-        'auteur'=>[
-            'nom'=>'Wyatt Quiron',
-            'avatar'=>'https://randomuser.me/api/portraits/men/11.jpg'
-        ],
-        'nombreOfResponse'=>25
-    ];
+       $comment= new Comment(); 
+       $commentForm = $this->createForm(CommentType::class, $comment);
+       $commentForm->handleRequest($request);
+
+       if ($commentForm->isSubmitted() && $commentForm->isValid()){
+            $comment->setCreatedAt(new \DateTimeImmutable());
+            $comment->setRating(0);
+            $comment->setQuestion($question);
+            $question->setNombreOfResonse($question->getNombreOfResonse() + 1);
+            $em->persist($comment);
+            $em->flush();
+            $this->addFlash('success', 'Votre reponse a bien été ajouter');
+            return  $this->redirect($request->getUri());
+       }
+
+
+
+
+
+    //    $question =  [
+    //     'id'=>3,
+    //     'title'=>'WONDER You Can\'t Afford ',
+    //     'content'=>'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Alias harum atque ducimus ullam temporibus, sequi rerum natus consequatur modi libero!',
+    //     'rating'=>0,
+    //     'auteur'=>[
+    //         'nom'=>'Wyatt Quiron',
+    //         'avatar'=>'https://randomuser.me/api/portraits/men/11.jpg'
+    //     ],
+    //     'nombreOfResponse'=>25
+    // ];
 
         return $this->render('question/show.html.twig', [
             'question'=>$question,
+            'form'=>$commentForm->createView()
         ]);
     }
 }

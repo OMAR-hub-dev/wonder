@@ -7,12 +7,8 @@
  <ul>
   {% for  question in questions %}
   <a href= {{ path('question_show',{id:question.id}) }} class="block  block-shadow d-flex flex-row mb-10">
-    <div class='d-flex flex-column mr-20 align-items-center'>
-      <i class="fa-regular fa-thumbs-up {{ question.rating > 0 ?'rating-up' : '' }}"></i>
-      <p class='text-small {{ question.rating > 0 ? 'rating-up': question.rating < 0 ? 'rating-down': '' }}'>{{question.rating}}</p>
-      <i class="fa-regular fa-thumbs-down {{ question.rating < 0 ?'rating-down' : '' }}"></i>
-    </div>
-
+    
+    {% include "partials/_rating.html.twig" with {rating : question.rating} %}
     <div class="flex-fill d-flex flex-column">
       <div class='question-content mb-20 pb-20'>
         <h3 class='mb-20'>{{question.title}}</h3>
@@ -20,12 +16,12 @@
       </div>
       <div class="d-flex flex-row justify-content-between">
         <div class="d-flex flex-row align-items-center">
-          <img class='avatar mr-10'src={{question.auteur.avatar}} alt={{question.auteur.nom}}>
-          <small>Demandé par <span class='clickable'>{{question.auteur.nom}}</span></small>
+          <img class='avatar mr-10'src='https://randomuser.me/api/portraits/men/79.jpg' alt=''>
+          <small>Demandé par <span class='clickable'>mouatassim</span></small>
         </div>
         <div class='d-flex flex-row align-items-center'>
           <i class="far fa-comment mr-10"></i>
-          <p>{{question.nombreOfResponse}}</p>
+          <p>{{question.nombreOfResonse}}</p>
         </div>
       </div>
     </div>
