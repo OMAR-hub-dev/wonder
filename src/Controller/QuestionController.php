@@ -66,7 +66,7 @@ class QuestionController extends AbstractController
 
         $question ->setRating($question->getRating() + $score);
         $em->flush();
-        $referer = $request->server->get('HTTP-REFERER');
+        $referer = $request->server->get('HTTP_REFERER');
 
         return $referer? $this->redirect($referer): $this->redirectToRoute('home');
     }
@@ -76,7 +76,7 @@ class QuestionController extends AbstractController
 
         $comment ->setRating($comment->getRating() + $score);
         $em->flush();
-        $referer = $request->server->get('HTTP-REFERER');
+        $referer = $request->server->get('HTTP_REFERER');
 
         return $referer? $this->redirect($referer): $this->redirectToRoute('home');
     }
