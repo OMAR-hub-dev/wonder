@@ -192,6 +192,13 @@ small{
   cursor: pointer;
   box-shadow: var(--box-shadow);
 }
+.btn-out {
+  border-radius: var(--border-radius);
+  padding: 3px 7px;
+  border: 0;
+  cursor: pointer;
+  box-shadow: var(--box-shadow);
+}
 
 .app-content{
   background-color: #f1f2f6;
@@ -225,6 +232,10 @@ a {
   width: 30px;
   border-radius: 50%;
 }
+.avatar-lg{
+  width: 45px;
+  border-radius: 50%;
+}
 .clickable{
   color: #025E73;
   font-weight: var(--font-weight-semi-bold);
@@ -237,6 +248,10 @@ a {
 .separator{
   border-bottom: 1px solid #A5A692;
   margin: 30px 0px;
+}
+.profile-picture {
+  width: 150px;
+  border-radius: var(--border-radius);
 }
 /*============= header ============= */
 
@@ -271,7 +286,9 @@ header {
 .block{
   padding: 15px;
   border-radius: var(--border-radius);
-  background-color: #BFB78F;
+  /* background-color: #BFB78F; */
+  /* background-color: #D6CDA1; */
+  background: linear-gradient(75deg,#bfb78f 20%, #A5A692 80%);
   box-shadow: var(--box-shadow);
 }
 .block-shadow:hover{
@@ -296,7 +313,7 @@ header {
   border-color:#dcdde1 ;
   border-radius: var(--border-radius);
   padding: 10px 15px;
-  background-color: #dcdde1;
+  background: linear-gradient(90deg,#dcdde1 20%, #dfeaf7 80%);
 }
 .form-row textarea{
   min-height: 150px;

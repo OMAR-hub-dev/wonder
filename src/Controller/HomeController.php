@@ -19,7 +19,7 @@ class HomeController extends AbstractController
         // https://randomuser.me/api/portraits/men/79.jpg
 
         
-        $questions = $questionRepo->findAll();
+        $questions = $questionRepo->findBy([],['createdAt' => 'DESC']);
 
         return $this->render('home/index.html.twig', [
             'questions' => $questions,

@@ -17,19 +17,23 @@
                 <div class="d-flex flex-row-nowrap aligns-items-center pb-20 ">
                     <h3 class='mr-20'>{{ question.title}}</h3>
                     <div class="question-tag">Question</div>
-                    <img class='avatar ml-auto' src="https://randomuser.me/api/portraits/men/11.jpg" alt=''>
+                    <img class='avatar ml-auto' src="{{question.author.picture}}" alt=''>
                 </div>
                 <p class='question-text'>{{question.content}}</p>
-                <div class="separator"></div>
+
+                    {% if question.comments is not empty %}
+                        <div class="separator"></div>                    
+                    {% endif %}
+                    
                 {% for comment in question.comments %}
                 <div class=" mb-20 d-flex flex-row-nowrap">
                     {% include "partials/_rating.html.twig" with {rating : comment.rating, from:'comment', id: comment.id} %}
                     <div class="d-flex flex-column">
-                        <div class='d-flex flex-row-nowrap align-items-center pb-10'>
-                            <img class='avatar mr-10' src="https://randomuser.me/api/portraits/women/19.jpg" alt="">
-                            <p class='clickable'>JOE doe</p>
+                        <a href='{{ path('user',{id:comment.author.id })}}' class='d-flex flex-row-nowrap align-items-center pb-10'>
+                            <img class='avatar mr-10' src="{{comment.author.picture}}" alt="">
+                            <p class='clickable'>{{comment.author.fullName}}</p>
                             <small class='ml-auto '>{{ comment.createdAt | ago(locale='fr') }}</small>
-                        </div>
+                        </a>
                         <p class='question-response-text'>{{ comment.content}}</p>
                     </div>
                 </div>
@@ -38,15 +42,17 @@
 
                 <div class="separator"></div>
 
+                    {% if form is defined %}
+                        <h3 class='pb-20'>Votre réponse</h3>
+                        <div class="comment-form">
+                            {{form_start(form)}}
+                            {{form_rest(form)}}
 
-                <h3 class='pb-20'>Votre réponse</h3>
-                <div class="comment-form">
-                    {{form_start(form)}}
-                    {{form_rest(form)}}
-
-                    <button class='btn btn-primary-stroke'>Soumettre</button>
-                    {{form_end(form)}}
-                </div>
+                            <button class='btn btn-primary-stroke'>Soumettre</button>
+                            {{form_end(form)}}
+                        </div>
+                    {% endif %}
+               
             </div>
         </div>
     </div>
