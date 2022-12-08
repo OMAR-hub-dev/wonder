@@ -15,7 +15,10 @@
     <h3 class='pb-30'>Mes questions</h3>
         <ul>
         {% for question in app.user.questions %}
-           <li>{{ question.title }}</li> 
+           <li>
+                <small><i class="fa-sharp fa-solid fa-pen-nib"></i></small>
+                {{ question.title }}
+            </li> 
         {% endfor %}
         </ul>
 </div>
