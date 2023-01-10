@@ -346,6 +346,9 @@ header {
 .flash-success{
   background-color:#005C53 ;
 }
+.flash-error{
+  background-color:#7f2e4e ;
+}
 
 
 /* ===========Footer=========== */

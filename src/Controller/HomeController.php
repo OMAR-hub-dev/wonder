@@ -15,7 +15,7 @@ class HomeController extends AbstractController
     #[Route('/', name: 'home')]
     public function index(QuestionRepository $questionRepo): Response
     {
-        $this->addFlash('success','Votre Question a été bien ajouté');
+        // $this->addFlash('success','Votre Question a été bien ajouté');
         // https://randomuser.me/api/portraits/men/79.jpg
 
         
