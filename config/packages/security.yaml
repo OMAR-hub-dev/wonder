@@ -25,6 +25,9 @@ security:
                 enable_csrf : true
             logout:
                 path: logout
+            login_throttling:
+                max_attempts: 3
+                interval : '5 minutes'
             # guard:
             #     authenticators:
             #         - App\Security\LoginFormAuthenticator

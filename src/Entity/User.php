@@ -56,8 +56,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $lastName = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\Url(message: 'Votre image doit prevenir d\'une Url ')]
-    #[Assert\NotBlank(message: 'Veuillez renseigner une image de profile ')]
+  
     private ?string $picture = null;
 
     #[ORM\OneToMany(mappedBy: 'author', targetEntity: Vote::class, orphanRemoval: true)]
