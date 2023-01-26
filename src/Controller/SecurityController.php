@@ -32,6 +32,20 @@ class SecurityController extends AbstractController
         $userFrom = $this->createForm(UserType::class, $user);
         $userFrom->handleRequest($request);
         if ($userFrom->isSubmitted() && $userFrom->isValid()){
+            // enregistrement de la picture en bdd
+
+            // permet de récupérer l'image envoyée par l'utilisateur depuis le formulaire. 
+            $picture =  $userFrom->get('pictureFile')->getData();
+            //  nous récupérons le paramètre de service que nous venons de définir dans la configuration. 
+            $folder= $this->getParameter('profile.folder');
+            $ext= $picture->guessExtension() ?? 'bin';
+            // nous créons un nom de fichier aléatoire qui fait 10 octets que nous convertissons en hexadécimal. En hexadécimal (Base16), chaque caractère correspond à 4 bits donc 2 caractères correspondent à 1 octet. Le nom des fichiers sera donc de 20 caractères puis un point puis l'extension. 
+            $fileName = bin2hex(random_bytes(10)). '.' .$ext;
+            //  permet de déplacer l'image obtenue avec le formulaire depuis l'espace temporaire vers le dossier que nous avons défini et avec notre nom aléatoire. 
+            $picture->move($folder,$fileName);
+            // permet simplement d'enregistrer dans le champ picture l'URL vers l'image. Elle correspond au dossier défini dans le paramètre profile.folder.public_path (profiles) puis un / puis le nom aléatoire que nous avons défini. 
+            $user->setPicture($this->getParameter('profile.folder.public_path'). '/' . $fileName);
+
             $user->setPassword($PassWordHasher->hashPassword($user, $user->getPassword()));
             $em->persist($user);
             $em->flush();
