@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\UserType;
+use App\Service\Uploader;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -29,7 +30,7 @@ class UserController extends AbstractController
     }
     #[Route('/user', name: 'current_user')]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
-    public function currentUserProfile(EntityManagerInterface $em,Request $request, UserPasswordHasherInterface $passwordHasher,): Response
+    public function currentUserProfile(EntityManagerInterface $em,Request $request, UserPasswordHasherInterface $passwordHasher,Uploader $uploader): Response
     {
         $user = $this->getUser();
         $userForm = $this->createForm(UserType::class, $user);
@@ -47,13 +48,10 @@ class UserController extends AbstractController
             $user->setPassword( $passwordHasher->hashPassword($user , $newPassword));
         
            }
-        //    enregitrer la photo de profile en bdd
            $picture = $userForm->get('pictureFile')->getData();
-           $folder = $this->getParameter('profile.folder');
-           $ext = $picture->guessExtension();
-           $filename = bin2hex(random_bytes(10)) . '.' . $ext;
-           $picture->move($folder, $filename);
-           $user->setPicture($this->getParameter('profile.folder.public_path') . '/' . $filename);
+           if ($picture) {
+             $user->setPicture($uploader->uploadProfileImage($picture, $user->getPicture()));
+           }
           
             $em->flush();
            $this->addFlash('success','Modification sauvegardées ! ');

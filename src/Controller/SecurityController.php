@@ -5,6 +5,7 @@ namespace App\Controller;
 use DateTime;
 use App\Entity\User;
 use App\Form\UserType;
+use App\Service\Uploader;
 use App\Entity\ResetPassword;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -15,18 +16,18 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\RateLimiter\RateLimiterFactory;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\RateLimiter\RateLimiterFactory;
 
 class SecurityController extends AbstractController
 {
     #[Route('/signup', name: 'signup')]
-    public function signup(Request $request, EntityManagerInterface $em, UserPassWordHasherInterface $PassWordHasher, MailerInterface $mailer): Response
+    public function signup(Request $request, EntityManagerInterface $em, UserPassWordHasherInterface $PassWordHasher, MailerInterface $mailer, Uploader $uploader): Response
     {
         $user= new User();
         $userFrom = $this->createForm(UserType::class, $user);
@@ -36,15 +37,8 @@ class SecurityController extends AbstractController
 
             // permet de récupérer l'image envoyée par l'utilisateur depuis le formulaire. 
             $picture =  $userFrom->get('pictureFile')->getData();
-            //  nous récupérons le paramètre de service que nous venons de définir dans la configuration. 
-            $folder= $this->getParameter('profile.folder');
-            $ext= $picture->guessExtension() ?? 'bin';
-            // nous créons un nom de fichier aléatoire qui fait 10 octets que nous convertissons en hexadécimal. En hexadécimal (Base16), chaque caractère correspond à 4 bits donc 2 caractères correspondent à 1 octet. Le nom des fichiers sera donc de 20 caractères puis un point puis l'extension. 
-            $fileName = bin2hex(random_bytes(10)). '.' .$ext;
-            //  permet de déplacer l'image obtenue avec le formulaire depuis l'espace temporaire vers le dossier que nous avons défini et avec notre nom aléatoire. 
-            $picture->move($folder,$fileName);
             // permet simplement d'enregistrer dans le champ picture l'URL vers l'image. Elle correspond au dossier défini dans le paramètre profile.folder.public_path (profiles) puis un / puis le nom aléatoire que nous avons défini. 
-            $user->setPicture($this->getParameter('profile.folder.public_path'). '/' . $fileName);
+            $user->setPicture($uploader->uploadProfileImage($picture));
 
             $user->setPassword($PassWordHasher->hashPassword($user, $user->getPassword()));
             $em->persist($user);
