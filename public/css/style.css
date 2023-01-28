@@ -56,7 +56,9 @@ small{
   font-size: var(--font-size-small);
   font-family: var(--font-family);
 }
-
+input[type="file"]{
+  width: 100%;
+}
 
 /* ***********flex *********************** */
 
@@ -64,7 +66,7 @@ small{
   display: flex;
 }
 
-.flex-row-nowrap {
+.flex-row-nowrap, .flex-menu-xs {
   flex-flow: row nowrap;
 }
 
@@ -280,8 +282,20 @@ header {
 .header-logo img {
   max-width: 150px;
 }
+.burger, .hidden{
+  display: none;
+}
 
-
+.menu-xs {
+ 
+  border-bottom: var(--border);
+  box-shadow: var(--box-shadow);
+ 
+}
+.menu-xs a{
+  margin: 10px 15px;
+  /* display: none; */
+}
 /* ================ Question page ======================= */
 .block{
   padding: 15px;
@@ -361,6 +375,7 @@ footer{
 
 .sidebar {
   min-width: 200px;
+  margin-right: 50px;
 }
 
 .sidebar-nav a {
@@ -383,4 +398,34 @@ footer{
 .active {
   border-left: 5px solid var(--primary);
   background-color: var(--primary-light2);
+}
+
+
+/* -------------------- MEDIA QUERIES(medium devices)-------------------- */
+@media screen and (max-width:1024px){
+  .container{
+      width: var(--container-width-md);
+  
+  }
+  section {
+      margin-top: 6rem;
+  }
+}
+/* -------------------- MEDIA QUERIES(small devices)-------------------- */
+@media screen and (max-width:750px){
+  .header-search, .hide-xs{
+    display: none;
+  }
+ 
+ .show{
+  display: inherit;
+  font-size: large;
+ }
+.flex-menu-xs{
+  flex-direction: column;
+}
+.sidebar{
+  margin:5px 15px;
+}
+ 
 }
